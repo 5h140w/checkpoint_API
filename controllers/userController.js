@@ -1,4 +1,5 @@
 const user = require("../models/user");
+const bcrypt = require("bcrypt");
 
 // method : GET
 // @localhost:8000/user/allusers
@@ -12,11 +13,17 @@ module.exports.getAllusers = async (req, res) => {
 module.exports.adduser = async (req, res) => {
   // req.body
   const { name, email, password, isActive } = req.body;
+
+  // 9adeh min mara bech na3mel hashage
+  const salt = await bcrypt.genSalt(10);
+  // a3tini text => result
+  const hashedpassword = await bcrypt.hash(password, salt);
+
   const addeduser = new user({
     name,
     // field email : email miniscule
     email: email.toLowerCase(),
-    password,
+    password: hashedpassword,
     isActive,
   });
 
